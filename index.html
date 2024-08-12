@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Like a Buddha Quiz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const questions = [
+            {
+                question: "What does Ajahn Sucitto mean by 'pāṇa' in relation to breathing?",
+                options: [
+                    "The physical act of inhaling and exhaling",
+                    "The energy associated with breathing",
+                    "The sound of the breath",
+                    "The duration of each breath"
+                ],
+                correctAnswers: [1],
+                feedback: "Ajahn Sucitto refers to 'pāṇa' as the energy, rather than the physical sensations, associated with breathing."
+            },
+            {
+                question: "How does the book describe the structure of the sixteen instructions in ānāpānasati?",
+                options: [
+                    "As a single continuous process",
+                    "As four separate 'tetrads'",
+                    "As sixteen independent steps",
+                    "As two main sections"
+                ],
+                correctAnswers: [1],
+                feedback: "The sixteen instructions in ānāpānasati are described as being structured in four separate 'tetrads' or clusters of four instructions each."
+            },
+            {
+                question: "What does Ajahn Sucitto emphasize about the environment for meditation practice?",
+                options: [
+                    "It should always be indoors",
+                    "It must be completely silent",
+                    "It should be free from clutter and distractions",
+                    "It requires specific meditation equipment"
+                ],
+                correctAnswers: [2],
+                feedback: "Ajahn Sucitto emphasizes that the environment for meditation practice should be free from clutter and distractions, ideally a quiet and natural place."
+            },
+            {
+                question: "According to the book, what is the relationship between right view and right mindfulness?",
+                options: [
+                    "They are unrelated practices",
+                    "Right view comes after establishing right mindfulness",
+                    "Right mindfulness is guided by right view",
+                    "Right view replaces the need for mindfulness"
+                ],
+                correctAnswers: [2],
+                feedback: "The book emphasizes that right mindfulness is guided by right view, suggesting that our understanding (view) shapes how we practice mindfulness."
+            },
+            {
+                question: "What does 'pajānāti' (directly knowing) refer to in the context of meditation?",
+                options: [
+                    "Intellectual understanding of concepts",
+                    "Non-conceptual and sensitive clarity",
+                    "Memorization of Buddhist teachings",
+                    "Ability to explain meditation techniques to others"
+                ],
+                correctAnswers: [1],
+                feedback: "In the context of meditation, 'pajānāti' refers to direct knowing, which is a non-conceptual and sensitive clarity, rather than intellectual understanding."
+            },
+            {
+                question: "What does Ajahn Sucitto suggest about focusing on a particular point in the body during meditation?",
+                options: [
+                    "It's essential to always focus on the nose tip",
+                    "A specific point of focus is not emphasized in the original teachings",
+                    "The point of focus should change with each breath",
+                    "Only the abdomen should be used as a focal point"
+                ],
+                correctAnswers: [1],
+                feedback: "Ajahn Sucitto points out that the Buddha didn't leave specific instructions to focus on a particular point in the body, suggesting this is not emphasized in the original teachings."
+            },
+            {
+                question: "How does the book describe 'kāyasaṅkhāra' (bodily formation)?",
+                options: [
+                    "The physical structure of the body",
+                    "The process of building muscle",
+                    "The weave of energies that sustains and moderates the body",
+                    "The act of physical exercise"
+                ],
+                correctAnswers: [2],
+                feedback: "The book describes 'kāyasaṅkhāra' as the weave of energies that sustains and moderates the workings of the body."
+            },
+            {
+                question: "What are the five hindrances mentioned in the book?",
+                options: [
+                    "Greed, hatred, delusion, ignorance, and doubt",
+                    "Sense-desire, ill-will, sloth and torpor, restlessness and remorse, and doubt",
+                    "Attachment, aversion, sleepiness, excitement, and confusion",
+                    "Craving, anger, laziness, worry, and skepticism"
+                ],
+                correctAnswers: [1],
+                feedback: "The five hindrances mentioned are sense-desire, ill-will, sloth and torpor (mental stiffness and lethargy), restlessness and remorse, and doubt."
+            },
+            {
+                question: "What is the main focus of insight practice according to the book?",
+                options: [
+                    "Achieving altered states of consciousness",
+                    "Memorizing Buddhist scriptures",
+                    "Witnessing the changeable nature of experience",
+                    "Developing psychic powers"
+                ],
+                correctAnswers: [2],
+                feedback: "The book emphasizes that insight practice focuses on witnessing the changeable (anicca) nature of experience."
+            },
+            {
+                question: "What does Ajahn Sucitto mean by 'pīti' in the context of meditation?",
+                options: [
+                    "Physical pain",
+                    "Mental confusion",
+                    "Rapture or refreshment",
+                    "Sleepiness"
+                ],
+                correctAnswers: [2],
+                feedback: "In the context of meditation, 'pīti' refers to rapture or refreshment, an uplifting quality of experience."
+            },
+            // ... Add more questions here from the previous list ...
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function Quiz() {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
+            const [selectedAnswers, setSelectedAnswers] = React.useState([]);
+            const [showFeedback, setShowFeedback] = React.useState(false);
+            const [score, setScore] = React.useState(0);
+            const [quizComplete, setQuizComplete] = React.useState(false);
+            const [shuffledQuestions, setShuffledQuestions] = React.useState([]);
+
+            React.useEffect(() => {
+                const shuffled = [...questions];
+                shuffleArray(shuffled);
+                setShuffledQuestions(shuffled);
+            }, []);
+
+            const handleAnswerChange = (index) => {
+                const newSelectedAnswers = [...selectedAnswers];
+                const answerIndex = newSelectedAnswers.indexOf(index);
+                if (answerIndex > -1) {
+                    newSelectedAnswers.splice(answerIndex, 1);
+                } else {
+                    newSelectedAnswers.push(index);
+                }
+                setSelectedAnswers(newSelectedAnswers);
+            };
+
+            const handleSubmit = () => {
+                const question = shuffledQuestions[currentQuestionIndex];
+                const isCorrect = question.correctAnswers.every(answer => selectedAnswers.includes(answer)) &&
+                                  selectedAnswers.length === question.correctAnswers.length;
+                if (isCorrect) {
+                    setScore(score + 1);
+                }
+                setShowFeedback(true);
+            };
+
+            const nextQuestion = () => {
+                if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedAnswers([]);
+                    setShowFeedback(false);
+                } else {
+                    setQuizComplete(true);
+                }
+            };
+
+            if (quizComplete) {
+                return (
+                    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-bold mb-4">Quiz Completed!</h2>
+                        <p className="text-lg">Your score: {score} out of {shuffledQuestions.length}</p>
+                    </div>
+                );
+            }
+
+            if (shuffledQuestions.length === 0) {
+                return <div>Loading...</div>;
+            }
+
+            const question = shuffledQuestions[currentQuestionIndex];
+
+            return (
+                <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+                    <h2 className="text-2xl font-bold mb-4">Question {currentQuestionIndex + 1} of {shuffledQuestions.length}</h2>
+                    <p className="text-lg mb-4">{question.question}</p>
+                    <div className="space-y-2">
+                        {question.options.map((option, index) => (
+                            <label key={index} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedAnswers.includes(index)}
+                                    onChange={() => handleAnswerChange(index)}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span>{option}</span>
+                            </label>
+                        ))}
+                    </div>
+                    {!showFeedback && (
+                        <button onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Submit
+                        </button>
+                    )}
+                    {showFeedback && (
+                        <div className="mt-4">
+                            <p className={`text-lg ${selectedAnswers.every(answer => question.correctAnswers.includes(answer)) && selectedAnswers.length === question.correctAnswers.length ? 'text-green-600' : 'text-red-600'}`}>
+                                {selectedAnswers.every(answer => question.correctAnswers.includes(answer)) && selectedAnswers.length === question.correctAnswers.length ? 'Correct!' : 'Incorrect'}
+                            </p>
+                            <p className="mt-2">{question.feedback}</p>
+                            <button onClick={nextQuestion} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                Next Question
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<Quiz />, document.getElementById('root'));
+    </script>
+</body>
+</html>
